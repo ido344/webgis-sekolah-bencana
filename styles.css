@@ -1,0 +1,179 @@
+/* Style Kerangka Secara Umum */
+html {
+    scroll-behavior: smooth;
+    font-family: sans-serif;
+    caret-color: transparent;
+}
+
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Seluruh Komponen Pada Header */
+
+header nav {
+    display: flex;
+    justify-content: center;
+}
+
+header nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 20px;
+}
+
+#navbar {
+    background-color: #ffae00;
+    /* Soft blue color without transparency */
+    color: #ffffff;
+    padding: 20px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    border-bottom: 2px solid #333;
+    font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    /* Smooth transition for background color */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; 
+    flex-wrap: wrap;     
+}
+
+nav ul li {
+    display: inline;
+    margin-left: 20px;
+}
+
+nav ul li:first-child {
+    margin-left: 0;
+}
+
+nav ul li a {
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    font-size: 16px;
+    position: relative;
+    /* Needed for pseudo-element positioning */
+}
+
+nav ul li a::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    /* Move the pseudo-element up by half of the hover size */
+    left: -7px;
+    /* Move the pseudo-element left by half of the hover size */
+    width: calc(100% + 14px);
+    /* Expand the width by 14 pixels (7px on each side) */
+    height: calc(100% + 14px);
+    /* Expand the height by 14 pixels (7px on each side) */
+    background-color: #ffae00;
+    /* Background color without transparency */
+    border-radius: 10px;
+    /* Rounded corners */
+    z-index: -1;
+    /* Behind the text */
+    transition: background-color 0.3s ease;
+    /* Smooth transition for background color */
+}
+
+nav ul li a:hover::before {
+    background-color: #ffffff;
+    /* Adjusted hover color without transparency */
+}
+
+nav ul li a:hover {
+    color: #000000;
+    /* Adjusted font color to match hover color */
+}
+
+.hero-section {
+    margin-top: 60px;
+    /* Adjust margin to make room for fixed navbar */
+    background-image:
+        url('https://afandriadya.com/wp-content/uploads/2010/06/bandung1.jpg');
+    /* Replace 
+        'city-background.jpg' with your image */
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+}
+.hero-content {
+    max-width: 1800px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    order-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #E8EBD2;
+}
+
+/* Map Section */
+#map {
+    width: 95%;
+    height: 500px;
+    background-color: lightgray;
+    margin: 40px auto;
+    margin-top: 10px;
+    /* Adjusted margin for space */
+    border: 2px solid #ffae00;
+    /* Add a border with a subtle color */
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    /* Relative positioning for child elements */
+    z-index: 98;
+    /* Set z-index to be behind the header */
+}
+
+#map-section h2 {
+    text-align: center;
+    margin-top: 20;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.legend {
+    padding: 6px 8px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+.legend div {
+    width: 30px;
+    height: 15px;
+    float: left;
+    margin-right: 8px;
+    opacity: 0.7;
+}
+div.legend.leaflet-control br {
+    clear: both;
+}
+
