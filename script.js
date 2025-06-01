@@ -336,3 +336,245 @@ searchControl.on('search:locationfound', function(e) {
     // Buka popup
     e.layer.bindPopup(popupContent).openPopup();
 });
+/// === Bagian Infografis Dinamis ===
+const filterSelect = document.getElementById("filterJenis");
+const infografisTableBody = document.querySelector("#tabelInfografis tbody");
+
+// Dropdown sekolah
+const namaSekolahSelect = document.createElement("select");
+namaSekolahSelect.id = "namaSekolahSelect";
+namaSekolahSelect.innerHTML = "<option value=''>Pilih Sekolah</option>";
+namaSekolahSelect.style.marginLeft = "10px";
+filterSelect.insertAdjacentElement("afterend", namaSekolahSelect);
+
+let allSekolahFeatures = [];
+
+function updateNamaSekolahDropdown(filteredFeatures) {
+    namaSekolahSelect.innerHTML = "<option value=''>Pilih Sekolah</option>";
+    filteredFeatures.forEach((feature) => {
+        const nama = feature.properties.poi_name || "(Tidak Ada Nama)";
+        const option = document.createElement("option");
+        option.value = nama;
+        option.text = nama;
+        namaSekolahSelect.appendChild(option);
+    });
+}
+
+function overlaySekolah(feature) {
+    let latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+    const bahayaTypes = [
+        { label: "Gempa", data: dataBahayaGempaPolygons },
+        { label: "Longsor", data: dataBahayaLongsorPolygons },
+        { label: "Banjir", data: dataBahayaBanjirPolygons },
+        { label: "Cuaca Ekstrem", data: dataBahayaCuacaEkstremPolygons },
+    ];
+
+    let results = [];
+    bahayaTypes.forEach((b) => {
+        let klasifikasiBahaya = "Di Luar Zona Bahaya";
+        if (b.data) {
+            let result = leafletPip.pointInLayer([latlng.lng, latlng.lat], L.geoJSON(b.data));
+            if (result.length > 0) klasifikasiBahaya = result[0].feature.properties.Klasifikas;
+        }
+        if (klasifikasiBahaya !== "Di Luar Zona Bahaya") {
+            results.push({ nama: feature.properties.poi_name, jenis: b.label, tingkat: klasifikasiBahaya });
+        }
+    });
+    return results;
+}
+
+function renderTabel(data) {
+    infografisTableBody.innerHTML = "";
+    data.forEach(row => {
+        infografisTableBody.innerHTML += `
+            <tr>
+                <td>${row.nama}</td>
+                <td>${row.jenis}</td>
+                <td>${row.tingkat}</td>
+            </tr>`;
+    });
+    renderChart(data);
+}
+
+function renderChart(data) {
+    const ctx = document.getElementById("chartInfografis").getContext("2d");
+    if (window.chartInstance) window.chartInstance.destroy();
+
+    const levelOrder = ["Di Luar Zona Bahaya", "Rendah", "Sedang", "Tinggi"];
+    const warnaBahaya = {
+        "Tinggi": "#FF0000",     // Merah
+        "Sedang": "#FFFF00",     // Kuning
+        "Rendah": "#1CFF00",     // Hijau
+        "Di Luar Zona Bahaya": "#CCCCCC" // Abu-abu
+    };
+
+    // Urutan tetap jenis bahaya
+    const jenisBahayaTetap = ["Gempa", "Cuaca Ekstrem", "Longsor", "Banjir"];
+
+    // Siapkan objek default
+    const hasil = jenisBahayaTetap.map(jenis => {
+        let entri = data.find(d => d.jenis === jenis);
+        let tingkat = entri ? entri.tingkat : "Di Luar Zona Bahaya";
+        return {
+            x: jenis,
+            y: levelOrder.indexOf(tingkat),
+            label: tingkat,
+            backgroundColor: warnaBahaya[tingkat]
+        };
+    });
+
+    window.chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: jenisBahayaTetap,
+            datasets: [{
+                label: 'Tingkat Bahaya',
+                data: hasil,
+                parsing: {
+                    yAxisKey: 'y',
+                    xAxisKey: 'x'
+                },
+                backgroundColor: hasil.map(d => d.backgroundColor)
+            }]
+        },
+        options: {
+            indexAxis: 'x',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    type: 'linear',
+                    min: 0,
+                    max: 3,
+                    ticks: {
+                        stepSize: 1,
+                        callback: function (value) {
+                            return levelOrder[value];
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: "Tingkat Bahaya"
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function (ctx) {
+                            return `Tingkat Bahaya: ${hasil[ctx.dataIndex].label}`;
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Visualisasi Tingkat Bahaya per Jenis'
+                }
+            }
+        }
+    });
+}
+namaSekolahSelect.addEventListener("change", function () {
+    const selectedNama = this.value;
+    if (!selectedNama) {
+        infografisTableBody.innerHTML = "";
+        return;
+    }
+    const sekolah = allSekolahFeatures.find(f => f.properties.poi_name === selectedNama);
+    if (sekolah) {
+        const overlayResult = overlaySekolah(sekolah);
+        renderTabel(overlayResult);
+    }
+});
+
+filterSelect.addEventListener("change", function () {
+    let selected = this.value;
+    TitikSekolah.clearLayers();
+    namaSekolahSelect.innerHTML = "<option value=''>Pilih Sekolah</option>";
+    infografisTableBody.innerHTML = "";
+
+    const filtered = allSekolahFeatures.filter((f) => selected === "ALL" || f.properties.Klasifikasi === selected);
+    updateNamaSekolahDropdown(filtered);
+
+    L.geoJSON(filtered, {
+        pointToLayer: function (feature, latlng) {
+            return L.circleMarker(latlng, {
+                ...getSekolahStyle(feature.properties.Klasifikasi),
+                pane: 'paneTitikSekolah'
+            });
+        },
+        onEachFeature: function (feature, layer) {
+            layer.on("click", function () {
+                let popup = `<b>Nama Sekolah:</b> ${feature.properties.poi_name || "-"}<br>`;
+                const latlng = layer.getLatLng();
+
+                [
+                    { label: "Gempa", data: dataBahayaGempaPolygons },
+                    { label: "Longsor", data: dataBahayaLongsorPolygons },
+                    { label: "Banjir", data: dataBahayaBanjirPolygons },
+                    { label: "Cuaca Ekstrem", data: dataBahayaCuacaEkstremPolygons },
+                ].forEach(b => {
+                    let klasifikasi = "Di Luar Zona Bahaya";
+                    if (b.data) {
+                        let result = leafletPip.pointInLayer([latlng.lng, latlng.lat], L.geoJSON(b.data));
+                        if (result.length > 0) klasifikasi = result[0].feature.properties.Klasifikas;
+                    }
+                    popup += `<b>Bahaya ${b.label}:</b> ${klasifikasi}<br>`;
+                });
+                layer.bindPopup(popup).openPopup();
+            });
+        }
+    }).addTo(TitikSekolah);
+});
+
+$.getJSON("./asset/SLTAWGS.geojson", function (dataSekolah) {
+    allSekolahFeatures = dataSekolah.features;
+    filterSelect.dispatchEvent(new Event("change"));
+});
+
+// Export ke Excel
+const exportExcelBtn = document.getElementById("exportExcel");
+if (exportExcelBtn) exportExcelBtn.addEventListener("click", function () {
+    let wb = XLSX.utils.book_new();
+    let rows = [["Nama Sekolah", "Jenis Bahaya", "Tingkat Bahaya"]];
+    document.querySelectorAll("#tabelInfografis tbody tr").forEach(tr => {
+        let cols = Array.from(tr.children).map(td => td.innerText);
+        rows.push(cols);
+    });
+    let ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, "Infografis");
+    XLSX.writeFile(wb, "Infografis_Sekolah.xlsx");
+});
+
+// Export ke PDF
+document.getElementById("exportPDF").addEventListener("click", function () {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  doc.text("Infografis Sekolah Rawan Bencana", 10, 10);
+
+  // Ambil data tabel
+  let rows = [];
+  document.querySelectorAll("#tabelInfografis tbody tr").forEach(tr => {
+    let cols = Array.from(tr.children).map(td => td.innerText);
+    rows.push(cols);
+  });
+
+  // Buat tabel
+  doc.autoTable({
+    head: [["Nama Sekolah", "Jenis Bahaya", "Tingkat Bahaya"]],
+    body: rows,
+    startY: 20
+  });
+
+  // Ambil canvas chart dan konversi ke gambar
+  const chartCanvas = document.getElementById("chartInfografis");
+  const chartImage = chartCanvas.toDataURL("image/png", 1.0);
+
+  // Tambahkan ke PDF setelah tabel
+  const chartY = doc.lastAutoTable.finalY + 10; // posisi bawah tabel
+  doc.addImage(chartImage, "PNG", 10, chartY, 180, 90); // (x, y, width, height)
+
+  doc.save("Infografis_Sekolah.pdf");
+});
