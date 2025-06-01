@@ -29,7 +29,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <!-- PopUp -->
     <script src="https://unpkg.com/leaflet-pip/leaflet-pip.min.js"></script>
-
 </head>
 
 <body>
@@ -59,6 +58,38 @@
             <!-- akan muncul peta disini -->
         </div>
     </div>
+    <div id="data-section">
+    <h2>Infografis Sekolah Rawan Bencana</h2>
+    <label for="filterJenis">Filter Sekolah:</label>
+    <select id="filterJenis">
+        <option value="ALL">Semua</option>
+        <option value="SMA">SMA</option>
+        <option value="MA">MA</option>
+        <option value="SMK">SMK</option>
+        <option value="Lainnya">Lainnya</option>
+    </select>
+    <table id="tabelInfografis">
+        <thead>
+            <tr>
+                <th>Nama Sekolah</th>
+                <th>Jenis Bahaya</th>
+                <th>Tingkat Bahaya</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <div style="margin-top: 15px;">
+    <button id="exportExcel">Export ke Excel</button>
+    <button id="exportPDF">Export ke PDF</button>
+    <canvas id="chartInfografis" style="max-width: 100%; margin-top: 20px;"></canvas>
+</div>
+
+<!-- Chart.js dan jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</div>
     <script src="script.js"></script>
 </body>
 
