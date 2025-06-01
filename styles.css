@@ -119,7 +119,7 @@ nav ul li a:hover {
         'city-background.jpg' with your image */
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    height: 70vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,7 +130,7 @@ nav ul li a:hover {
     max-width: 1800px;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.7);
-    order-radius: 10px;
+    border-radius: 10px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #E8EBD2;
 }
@@ -176,4 +176,59 @@ nav ul li a:hover {
 div.legend.leaflet-control br {
     clear: both;
 }
-
+#data-section {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 2px solid #ffae00;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', sans-serif;
+}
+#filterJenis, #namaSekolahSelect {
+    padding: 8px;
+    margin: 10px 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+#tabelInfografis {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background-color: white;
+}
+#tabelInfografis th, #tabelInfografis td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+#tabelInfografis th {
+    background-color: #ffae00;
+    color: white;
+}
+#tabelInfografis tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+button {
+    padding: 8px 12px;
+    background-color: #ffae00;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+button:hover {
+    background-color: #e09c00;
+}
+#chartInfografis {
+    width: 600px;
+    max-width: 900px;
+    height: 300px;
+    max-height: 300px;
+    display: block;
+    margin: 20px auto;
+}
