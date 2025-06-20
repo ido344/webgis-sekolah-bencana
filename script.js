@@ -9,10 +9,10 @@ map.createPane('paneTitikSekolah');
 map.getPane('paneTitikSekolah').style.zIndex = 650;
 // === Tambahan: Buat pane khusus untuk Batas Admin ===
 map.createPane('paneBatasAdmin');
-map.getPane('paneBatasAdmin').style.zIndex = 600; 
+map.getPane('paneBatasAdmin').style.zIndex = 600;
 // (lebih kecil dari paneTitikSekolah, tapi lebih besar dari layer bahaya)
 // === Akhir tambahan pane Batas Admin ===
-map.setView([-6.912296327013825, 107.60995170639679], 9);
+map.setView([-6.912296327013825, 107.60995170639679], 9.5);
 // 1.2 Menambahkan Basemap OSM
 const basemapOSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -41,9 +41,9 @@ map.addControl(new L.Control.Fullscreen());
 const home = {
     lat: -6.912296327013825,
     lng: 107.60995170639679,
-    zoom: 9
+    zoom: 10
 };
-L.easyButton('fa-home', function (btn, map) {
+L.easyButton('fas fa-home', function (btn, map) {
     map.setView([home.lat, home.lng], home.zoom);
 }, 'Zoom To Home').addTo(map)
 // 1.7 Menambahkan Fitur My Location
@@ -213,9 +213,9 @@ $.getJSON("./asset/Adm Bandung Raya.geojson", function (OBJECTID) {
     L.geoJSON(OBJECTID, {
         pane: 'paneBatasAdmin', // === PERUBAHAN: masukin ke pane batas admin
         style: {
-            color : "black",
-            weight : 2,
-            opacity : 1,
+            color: "black",
+            weight: 2,
+            opacity: 1,
             fillColor: "rgba(0, 0, 0, 0)",
             fillOpacity: 0 // === fix typo fillopacity ➔ fillOpacity
         }
@@ -252,7 +252,7 @@ const overlayMaps = {
     "Bahaya Gempa Bumi": BahayaGempa,
     "Bahaya Longsor": BahayaLongsor, // Tambahan
     "Bahaya Banjir": BahayaBanjir, // Tambahan
-    "Bahaya Cuaca Ekstrem": BahayaCuacaEkstrem ,// Tambahan
+    "Bahaya Cuaca Ekstrem": BahayaCuacaEkstrem,// Tambahan
     "Batas Administrasi Kab/Kota": BatasAdmin
 };
 
@@ -263,21 +263,21 @@ let legend = L.control({ position: "topright" });
 legend.onAdd = function () {
     let div = L.DomUtil.create("div", "legend");
     div.innerHTML =
-    //Judul
-    '<p style= "font-size: 18px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Legenda</p>' +
-    ///Isi Legenda
-    ///Legenda Titik Sekolah
-    '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Sekolah</p>' +
-    '<div style="background-color: #1f77b4; width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>SMA</span><br>' +
-    '<div style="background-color: rgb(42, 97, 28); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>MA</span><br>' +
-    '<div style="background-color:rgb(255, 115, 0); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>SMK</span><br>' +
-    '<div style="background-color: #999999; width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>Lainnya</span><br>' +
-    ////Legenda Bahaya Bencana
-    '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Klasifikasi Bahaya Bencana</p>' +
-        '<div style="background-color: #FF0000"></div>Tinggi<br>'+
-        '<div style="background-color: #FFFF00"></div>Sedang<br>'+
+        //Judul
+        '<p style= "font-size: 18px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Legenda</p>' +
+        ///Isi Legenda
+        ///Legenda Titik Sekolah
+        '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Sekolah</p>' +
+        '<div style="background-color: #1f77b4; width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>SMA</span><br>' +
+        '<div style="background-color: rgb(42, 97, 28); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>MA</span><br>' +
+        '<div style="background-color:rgb(255, 115, 0); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>SMK</span><br>' +
+        '<div style="background-color: #999999; width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>Lainnya</span><br>' +
+        ////Legenda Bahaya Bencana
+        '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Klasifikasi Bahaya Bencana</p>' +
+        '<div style="background-color: #FF0000"></div>Tinggi<br>' +
+        '<div style="background-color: #FFFF00"></div>Sedang<br>' +
         '<div style="background-color: #1CFF00"></div>Rendah<br>'
-        return div;
+    return div;
 };
 legend.addTo(map)
 
@@ -287,7 +287,7 @@ const searchControl = new L.Control.Search({
     propertyName: 'poi_name',
     position: 'topleft',
     textPlaceholder: 'Cari Sekolah...',
-    moveToLocation: function(latlng, title, map) {
+    moveToLocation: function (latlng, title, map) {
         map.setView(latlng, 18); // Zoom pas search
     }
 });
@@ -295,7 +295,7 @@ const searchControl = new L.Control.Search({
 map.addControl(searchControl);
 
 // === Tambahan supaya setelah ketemu, langsung buka popup lengkap ===
-searchControl.on('search:locationfound', function(e) {
+searchControl.on('search:locationfound', function (e) {
     let feature = e.layer.feature; // Ambil data GeoJSONnya
     let latlng = e.layer.getLatLng();
 
@@ -350,7 +350,10 @@ filterSelect.insertAdjacentElement("afterend", namaSekolahSelect);
 let allSekolahFeatures = [];
 
 function updateNamaSekolahDropdown(filteredFeatures) {
-    namaSekolahSelect.innerHTML = "<option value=''>Pilih Sekolah</option>";
+    namaSekolahSelect.innerHTML = `
+        <option value=''>Pilih Sekolah</option>
+        <option value='__ALL__'>Semua Sekolah</option>
+    `;
     filteredFeatures.forEach((feature) => {
         const nama = feature.properties.poi_name || "(Tidak Ada Nama)";
         const option = document.createElement("option");
@@ -359,7 +362,6 @@ function updateNamaSekolahDropdown(filteredFeatures) {
         namaSekolahSelect.appendChild(option);
     });
 }
-
 function overlaySekolah(feature) {
     let latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
     const bahayaTypes = [
@@ -383,7 +385,7 @@ function overlaySekolah(feature) {
     return results;
 }
 
-function renderTabel(data) {
+function renderTabel(data, disableChart = false) {
     infografisTableBody.innerHTML = "";
     data.forEach(row => {
         infografisTableBody.innerHTML += `
@@ -393,9 +395,15 @@ function renderTabel(data) {
                 <td>${row.tingkat}</td>
             </tr>`;
     });
-    renderChart(data);
-}
 
+    if (!disableChart) {
+        renderChart(data);
+    } else {
+        if (window.chartInstance) {
+            window.chartInstance.destroy();
+        }
+    }
+}
 function renderChart(data) {
     const ctx = document.getElementById("chartInfografis").getContext("2d");
     if (window.chartInstance) window.chartInstance.destroy();
@@ -477,17 +485,25 @@ function renderChart(data) {
 }
 namaSekolahSelect.addEventListener("change", function () {
     const selectedNama = this.value;
-    if (!selectedNama) {
-        infografisTableBody.innerHTML = "";
-        return;
-    }
-    const sekolah = allSekolahFeatures.find(f => f.properties.poi_name === selectedNama);
-    if (sekolah) {
-        const overlayResult = overlaySekolah(sekolah);
-        renderTabel(overlayResult);
+    infografisTableBody.innerHTML = "";
+
+    if (!selectedNama) return;
+
+    if (selectedNama === "__ALL__") {
+        // Tampilkan semua sekolah + overlay bahaya
+        let semuaData = [];
+        allSekolahFeatures.forEach((sekolah) => {
+            semuaData = semuaData.concat(overlaySekolah(sekolah));
+        });
+        renderTabel(semuaData, true); // true artinya tanpa grafik
+    } else {
+        const sekolah = allSekolahFeatures.find(f => f.properties.poi_name === selectedNama);
+        if (sekolah) {
+            const overlayResult = overlaySekolah(sekolah);
+            renderTabel(overlayResult);
+        }
     }
 });
-
 filterSelect.addEventListener("change", function () {
     let selected = this.value;
     TitikSekolah.clearLayers();
@@ -549,32 +565,32 @@ if (exportExcelBtn) exportExcelBtn.addEventListener("click", function () {
 
 // Export ke PDF
 document.getElementById("exportPDF").addEventListener("click", function () {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
 
-  doc.text("Infografis Sekolah Rawan Bencana", 10, 10);
+    doc.text("Infografis Sekolah Rawan Bencana", 10, 10);
 
-  // Ambil data tabel
-  let rows = [];
-  document.querySelectorAll("#tabelInfografis tbody tr").forEach(tr => {
-    let cols = Array.from(tr.children).map(td => td.innerText);
-    rows.push(cols);
-  });
+    // Ambil data tabel
+    let rows = [];
+    document.querySelectorAll("#tabelInfografis tbody tr").forEach(tr => {
+        let cols = Array.from(tr.children).map(td => td.innerText);
+        rows.push(cols);
+    });
 
-  // Buat tabel
-  doc.autoTable({
-    head: [["Nama Sekolah", "Jenis Bahaya", "Tingkat Bahaya"]],
-    body: rows,
-    startY: 20
-  });
+    // Buat tabel
+    doc.autoTable({
+        head: [["Nama Sekolah", "Jenis Bahaya", "Tingkat Bahaya"]],
+        body: rows,
+        startY: 20
+    });
 
-  // Ambil canvas chart dan konversi ke gambar
-  const chartCanvas = document.getElementById("chartInfografis");
-  const chartImage = chartCanvas.toDataURL("image/png", 1.0);
+    // Ambil canvas chart dan konversi ke gambar
+    const chartCanvas = document.getElementById("chartInfografis");
+    const chartImage = chartCanvas.toDataURL("image/png", 1.0);
 
-  // Tambahkan ke PDF setelah tabel
-  const chartY = doc.lastAutoTable.finalY + 10; // posisi bawah tabel
-  doc.addImage(chartImage, "PNG", 10, chartY, 180, 90); // (x, y, width, height)
+    // Tambahkan ke PDF setelah tabel
+    const chartY = doc.lastAutoTable.finalY + 10; // posisi bawah tabel
+    doc.addImage(chartImage, "PNG", 10, chartY, 180, 90); // (x, y, width, height)
 
-  doc.save("Infografis_Sekolah.pdf");
+    doc.save("Infografis_Sekolah.pdf");
 });
