@@ -232,3 +232,20 @@ button:hover {
     display: block;
     margin: 20px auto;
 }
+#footer { 
+    background-color: #e09c00; 
+    color: #E8EBD2; 
+    text-align: center; 
+    padding: 20px; 
+    font-family: 'Montserrat', sans-serif; 
+    flex-shrink: 0; 
+} 
+ 
+#footer { 
+    background-color: #e09c00; 
+    color: #ffffff; 
+    text-align: center; 
+    padding: 20px; 
+    font-family: 'Montserrat', sans-serif; 
+    flex-shrink: 0;
+}
