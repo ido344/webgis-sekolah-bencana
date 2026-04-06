@@ -7,27 +7,26 @@ const map = L.map('map', {
 // === PERUBAHAN: Buat pane untuk Titik Sekolah supaya selalu di atas ===
 map.createPane('paneTitikSekolah');
 map.getPane('paneTitikSekolah').style.zIndex = 650;
+// === PANE SESAR ===
+map.createPane('paneSesar');
+map.getPane('paneSesar').style.zIndex = 625;
 // === Tambahan: Buat pane khusus untuk Batas Admin ===
 map.createPane('paneBatasAdmin');
 map.getPane('paneBatasAdmin').style.zIndex = 600;
 // (lebih kecil dari paneTitikSekolah, tapi lebih besar dari layer bahaya)
 // === Akhir tambahan pane Batas Admin ===
 map.setView([-6.912296327013825, 107.60995170639679], 9.5);
-// 1.2 Menambahkan Basemap OSM
+
+//BaseMap
+// 1.2 Menambahkan Basemap OSM (Hapus .addTo(map))
 const basemapOSM = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-//basemap gelap
-// 1.2 Menambahkan Basemap Esri Dark
+    attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+// 1.3 Menambahkan Basemap Esri Dark (Hapus .addTo(map))
 const basemapesri = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 20,
     attribution: 'Data peta © <a href="https://www.esri.com">Esri</a>'
-}).addTo(map);
-// 1.3 Menambahkan Basemap OSM HOT
-const osmHOT = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team hosted by OpenStreetMap France'
 });
 // 1.4 Menambahkan Basemap Google
 const baseMapGoogle = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
@@ -35,9 +34,21 @@ const baseMapGoogle = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&
     attribution: 'Map by <a href="https://maps.google.com/">Google</a>',
     subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
 });
-// 1.5 Menambahkan Fitur Fullscreen Peta
+// 1.5 Basemap Satelit (Esri World Imagery)
+const basemapSatelit = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: 'Data peta © <a href="https://www.esri.com">Esri</a>'
+});
+// 1.6 // Basemap Esri Topographic (Sebagai Default)
+const basemapEsriTopo = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 19,
+    attribution: 'Data peta © <a href="https://www.esri.com">Esri</a>'
+}).addTo(map);
+
+// Menambahkan Fitur Fullscreen Peta
 map.addControl(new L.Control.Fullscreen());
-// 1.6 Menambahkan Tombol Home (Zoom to Extent)
+
+// Menambahkan Tombol Home (Zoom to Extent)
 const home = {
     lat: -6.912296327013825,
     lng: 107.60995170639679,
@@ -82,9 +93,9 @@ function getSekolahStyle(Klasifikasi) {
     };
 }
 
-
 // Layer grup sekolah & bahaya Bencana
 const TitikSekolah = new L.LayerGroup();
+const GarisSesar = new L.LayerGroup();
 const BahayaGempa = new L.LayerGroup();
 const BahayaBanjir = new L.LayerGroup();
 const BahayaLongsor = new L.LayerGroup();
@@ -158,7 +169,23 @@ $.getJSON("./asset/SLTAWGS.geojson", function (dataSekolah) {
         }
     }).addTo(TitikSekolah);
     TitikSekolah;
+});
 
+// Load Data Sesar Aktif
+$.getJSON("./asset/Sesar Lembang.geojson", function (dataSesar) {
+    L.geoJSON(dataSesar, {
+        pane: 'paneSesar',
+        style: {
+            color: "#ff0000", // Warna garis merah
+            weight: 2,        // Ketebalan garis
+            opacity: 0.8,
+        },
+        onEachFeature: function (feature, layer) {
+            // Ganti "nama_sesar" dengan nama field/kolom atribut sesar di GeoJSON kamu
+            let namaSesar = feature.properties.nama_sesar || "Sesar Lembang";
+            layer.bindPopup('<b>Patahan/Sesar:</b> ' + namaSesar);
+        }
+    }).addTo(GarisSesar);
 });
 
 // Load data bahaya gempa
@@ -225,15 +252,18 @@ $.getJSON("./asset/Adm Bandung Raya.geojson", function (OBJECTID) {
 // === Urutan Layer Manual ===
 
 // 1. Layer bahaya dulu (paling bawah)
-BahayaGempa.addTo(map);
-BahayaLongsor.addTo(map);
-BahayaBanjir.addTo(map);
-BahayaCuacaEkstrem.addTo(map);
+BahayaGempa;
+BahayaLongsor;
+BahayaBanjir;
+BahayaCuacaEkstrem;
 
 // 2. Batas Administrasi di atas bahaya
 BatasAdmin.addTo(map);
 
-// 3. Titik Sekolah paling atas
+// 3. Garis Sesar
+GarisSesar.addTo(map);
+
+// 4. Titik Sekolah paling atas
 TitikSekolah.addTo(map);
 
 // === Akhir Urutan ===
@@ -241,14 +271,16 @@ TitikSekolah.addTo(map);
 
 // Layer control
 const baseMaps = {
-    "Openstreetmap": basemapOSM,
-    "OSM HOT": osmHOT,
+    "Esri Topography": basemapEsriTopo, // Default baru
+    "Satelit": basemapSatelit,
+    "OpenStreetMap": basemapOSM,
     "Google": baseMapGoogle,
     "Esri Dark": basemapesri
 };
 
 const overlayMaps = {
     "Lokasi Sekolah": TitikSekolah,
+    "Sesar Lembang": GarisSesar,
     "Bahaya Gempa Bumi": BahayaGempa,
     "Bahaya Longsor": BahayaLongsor, // Tambahan
     "Bahaya Banjir": BahayaBanjir, // Tambahan
@@ -272,6 +304,9 @@ legend.onAdd = function () {
         '<div style="background-color: rgb(42, 97, 28); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>MA</span><br>' +
         '<div style="background-color:rgb(255, 115, 0); width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>SMK</span><br>' +
         '<div style="background-color: #999999; width: 15px; height: 15px; border-radius: 50%; float: left; margin-right: 5px;"></div><span>Lainnya</span><br>' +
+        ////Legenda Sesar Aktif
+        '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Sesar Aktif</p>' +
+        '<div style="background-color: transparent; border-top: 3px solid #ff0000; width: 15px; height: 0px; float: left; margin-top: 8px; margin-right: 5px;"></div><span>Sesar Lembang</span><br clear="all">' +
         ////Legenda Bahaya Bencana
         '<p style= "font-size: 12px; font-weight: bold; margin-bottom: 5px; margin-top: 10px">Klasifikasi Bahaya Bencana</p>' +
         '<div style="background-color: #FF0000"></div>Tinggi<br>' +
@@ -336,6 +371,9 @@ searchControl.on('search:locationfound', function (e) {
     // Buka popup
     e.layer.bindPopup(popupContent).openPopup();
 });
+// Menambahkan Sumber Data / Sitasi Kustom di Pojok Kanan Bawah
+map.attributionControl.addAttribution('<b>Sumber Data:</b> InaRISK BNPB | Peta Sesar Lembang Detail, Daryono. 2016 | Kemdikbud');
+
 /// === Bagian Infografis Dinamis ===
 const filterSelect = document.getElementById("filterJenis");
 const infografisTableBody = document.querySelector("#tabelInfografis tbody");
