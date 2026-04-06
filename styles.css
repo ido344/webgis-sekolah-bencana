@@ -58,8 +58,8 @@ nav ul {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center; 
-    flex-wrap: wrap;     
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 nav ul li {
@@ -126,6 +126,7 @@ nav ul li a:hover {
     color: white;
     text-align: center;
 }
+
 .hero-content {
     max-width: 1800px;
     padding: 20px;
@@ -166,6 +167,7 @@ nav ul li a:hover {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
 }
+
 .legend div {
     width: 30px;
     height: 15px;
@@ -173,9 +175,11 @@ nav ul li a:hover {
     margin-right: 8px;
     opacity: 0.7;
 }
+
 div.legend.leaflet-control br {
     clear: both;
 }
+
 #data-section {
     width: 95%;
     margin: 20px auto;
@@ -183,34 +187,42 @@ div.legend.leaflet-control br {
     background-color: #f9f9f9;
     border: 2px solid #ffae00;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     font-family: 'Segoe UI', sans-serif;
 }
-#filterJenis, #namaSekolahSelect {
+
+#filterJenis,
+#namaSekolahSelect {
     padding: 8px;
     margin: 10px 5px;
     border-radius: 5px;
     border: 1px solid #ccc;
     font-size: 14px;
 }
+
 #tabelInfografis {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
     background-color: white;
 }
-#tabelInfografis th, #tabelInfografis td {
+
+#tabelInfografis th,
+#tabelInfografis td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
 }
+
 #tabelInfografis th {
     background-color: #ffae00;
     color: white;
 }
+
 #tabelInfografis tbody tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
 button {
     padding: 8px 12px;
     background-color: #ffae00;
@@ -221,9 +233,11 @@ button {
     cursor: pointer;
     margin-right: 10px;
 }
+
 button:hover {
     background-color: #e09c00;
 }
+
 #chartInfografis {
     width: 600px;
     max-width: 900px;
@@ -232,20 +246,40 @@ button:hover {
     display: block;
     margin: 20px auto;
 }
-#footer { 
-    background-color: #e09c00; 
-    color: #E8EBD2; 
-    text-align: center; 
-    padding: 20px; 
-    font-family: 'Montserrat', sans-serif; 
-    flex-shrink: 0; 
-} 
- 
-#footer { 
-    background-color: #e09c00; 
-    color: #ffffff; 
-    text-align: center; 
-    padding: 20px; 
-    font-family: 'Montserrat', sans-serif; 
+
+/* TAMBAHKAN DI BAGIAN PALING BAWAH */
+#literasi-section {
+    width: 95%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 2px solid #ffae00;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+}
+
+#literasi-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+#footer {
+    background-color: #e09c00;
+    color: #E8EBD2;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    flex-shrink: 0;
+}
+
+#footer {
+    background-color: #e09c00;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
     flex-shrink: 0;
 }
